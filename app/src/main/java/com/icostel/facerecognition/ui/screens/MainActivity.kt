@@ -1,32 +1,36 @@
 package com.icostel.facerecognition.ui.screens
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
-import androidx.appcompat.app.AlertDialog
+import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
-import com.camerakit.CameraKit
-import com.camerakit.CameraKitView
 import com.google.firebase.ml.vision.face.FirebaseVisionFace
 import com.icostel.facerecognition.R
-import com.icostel.facerecognition.ui.utils.observe
 import com.icostel.facerecognition.ui.utils.bind
-import com.icostel.facerecognition.ui.utils.setImmersive
+import com.icostel.facerecognition.ui.utils.observe
 import com.icostel.facerecognition.ui.viewmodels.MainViewModel
 import com.icostel.facerecognition.ui.views.GraphicOverlay
 import com.icostel.facerecognition.ui.views.RectOverlay
+import com.wonderkiln.camerakit.CameraView
+import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 class MainActivity : BaseActivity() {
 
     companion object {
+        private const val RESUME_CAMERA_DELAY = 5000L
         private val TAG = MainActivity::class.java.simpleName
     }
 
     private lateinit var mainViewModel: MainViewModel
     private lateinit var detectBtn: Button
-    private lateinit var cameraKitView: CameraKitView
-    private lateinit var alertDialog: AlertDialog
+    private lateinit var cameraView: CameraView
+    private lateinit var progressBar: ProgressBar
     private lateinit var graphicOverlay: GraphicOverlay
+    private lateinit var dimView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,52 +39,52 @@ class MainActivity : BaseActivity() {
         mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
         setContentView(R.layout.activity_main)
         bindUi()
-
-        alertDialog = AlertDialog.Builder(this)
-            .setMessage(getString(R.string.please_wait))
-            .setCancelable(false)
-            .create()
     }
 
     override fun onResume() {
         super.onResume()
-        cameraKitView.onResume()
+        cameraView.start()
     }
 
     override fun onPause() {
         super.onPause()
-        cameraKitView.onPause()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        cameraKitView.onStart()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        cameraKitView.onStop()
+        cameraView.stop()
     }
 
     private fun bindUi() {
         detectBtn = bind(R.id.btn_detect)
-        cameraKitView = bind(R.id.camera_view)
+        cameraView = bind(R.id.camera_view)
         graphicOverlay = bind(R.id.graphic_overlay)
-        cameraKitView.flash = CameraKit.FLASH_OFF
+        progressBar = bind(R.id.progress_bar)
+        dimView = bind(R.id.dim_view)
 
         detectBtn.setOnClickListener {
-            cameraKitView.captureImage { cameraKitView, byteArray ->
-                cameraKitView.onStop()
-                alertDialog.show()
-                setImmersive()
-                mainViewModel.detect(byteArray, cameraKitView?.width ?: 0, cameraKitView?.height ?: 0)
+            progressBar.visibility = View.VISIBLE
+            detectBtn.isEnabled = false
+            detectBtn.text = getString(R.string.detecting)
+            dimView.visibility = View.VISIBLE
+            cameraView.captureImage { cameraImage ->
+                mainViewModel.detect(cameraImage.bitmap, cameraView.width, cameraView.height)
+                cameraView.stop()
+                graphicOverlay.clear()
             }
-            graphicOverlay.clear()
         }
 
         mainViewModel.detectLiveData.observe(this) { faces ->
-            if (faces != null) {
+            Timber.d("found faces: ${faces != null && faces.size != 0}")
+            progressBar.visibility = View.GONE
+            detectBtn.isEnabled = true
+            detectBtn.text = getString(R.string.detect)
+            dimView.visibility = View.GONE
+            // resume camera preview after processing
+            AndroidSchedulers.mainThread().scheduleDirect({
+                cameraView.start()
+                graphicOverlay.clear()
+            }, RESUME_CAMERA_DELAY, TimeUnit.MILLISECONDS)
+            if (faces != null && faces.size != 0) {
                 processFaceResult(faces)
+            } else {
+                Toast.makeText(this@MainActivity, getString(R.string.no_faces_found), Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -91,13 +95,5 @@ class MainActivity : BaseActivity() {
             val rectOverLay = RectOverlay(graphicOverlay, bounds)
             graphicOverlay.add(rectOverLay)
         }
-        alertDialog.dismiss()
     }
-
-    // the permission mechanism is already integrated into camera view
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        cameraKitView.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
 }

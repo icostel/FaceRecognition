@@ -5,27 +5,48 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@android:color/black"
         tools:context=".ui.screens.MainActivity">
 
-    <com.camerakit.CameraKitView
+    <com.wonderkiln.camerakit.CameraView
             android:id="@+id/camera_view"
             android:layout_above="@id/btn_detect"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
             android:keepScreenOn="true"
-            app:camera_flash="auto"
-            app:camera_facing="back"
-            app:camera_focus="continuous"
-            app:camera_permissions="camera">
-    </com.camerakit.CameraKitView>
+            app:ckFlash="off"
+            app:ckPinchToZoom="true"
+            app:ckFacing="back"
+            app:ckFocus="tap"
+            app:ckPermissions="strict"/>
+
+    <View
+            android:id="@+id/dim_view"
+            android:visibility="gone"
+            android:background="#88000000"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    <ProgressBar
+            android:id="@+id/progress_bar"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:indeterminate="true"
+            android:layout_centerInParent="true"
+            android:indeterminateTint="@android:color/holo_orange_dark"
+            android:backgroundTint="@android:color/white"
+            android:max="100"
+            android:layout_height="wrap_content"/>
 
     <Button
             android:id="@+id/btn_detect"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="80dp"
+            android:textSize="18sp"
+            android:background="@android:color/white"
             android:layout_alignParentBottom="true"
-            android:layout_margin="@dimen/screen_margin"
+            android:textAllCaps="false"
             android:text="@string/detect"/>
 
     <com.icostel.facerecognition.ui.views.GraphicOverlay

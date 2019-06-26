@@ -24,7 +24,7 @@ versions.rx_kotlin = "2.3.0"
 versions.moshi = "1.8.0"
 versions.mltoolkit = "18.0.1"
 versions.gms = "4.2.0"
-versions.camerakit = "1.0.0-beta3.11"
+versions.camerakit = "0.13.4"
 versions.jpegkit = "0.1.0"
 
 
@@ -97,7 +97,7 @@ deps.mltoolkit = "com.google.firebase:firebase-ml-vision:$versions.mltoolkit"
 
 deps.gms = "com.google.gms:google-services:$versions.gms"
 
-deps.camerakit = "com.camerakit:camerakit:$versions.camerakit"
+deps.camerakit = "com.wonderkiln:camerakit:$versions.camerakit"
 
 deps.jpegkit = "com.camerakit:jpegkit:$versions.jpegkit"
 

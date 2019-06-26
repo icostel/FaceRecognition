@@ -1,7 +1,6 @@
 package com.icostel.facerecognition.ui.viewmodels
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
@@ -25,10 +24,9 @@ class MainViewModel
     internal val detectLiveData = MutableLiveData<MutableList<FirebaseVisionFace>?>()
 
     // todo maybe move this to a detector use case in a domain layer
-    internal fun detect(imageByteArray: ByteArray, width: Int, height: Int) {
+    internal fun detect(sourceBitmap: Bitmap, width: Int, height: Int) {
         disposable.add(Completable.fromCallable {
-            var bitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray?.size ?: 0)
-            bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false)
+            val bitmap = Bitmap.createScaledBitmap(sourceBitmap, width, height, false)
             val image = FirebaseVisionImage.fromBitmap(bitmap)
             faceDetector.detectInImage(image)
                 .addOnSuccessListener { faces ->
@@ -39,7 +37,11 @@ class MainViewModel
                     Timber.d("$TAG detect() could not detect image, err: ${it.message}")
                     detectLiveData.postValue(null)
                 }
-        }.subscribe())
+        }.subscribe({
+            Timber.d("$TAG detect() started")
+        }, {
+            Timber.d("$TAG detect() failed, err: ${it.localizedMessage}")
+        }))
     }
 
     override fun onCleared() {

@@ -5,7 +5,7 @@ import android.graphics.*;
 public class RectOverlay extends GraphicOverlay.Graphic {
 
     private static final int RECT_COLOR = Color.RED;
-    private static final float STROKE_WIDTH = 4.0f;
+    private static final float STROKE_WIDTH = 8.0f;
 
     private Paint rectPaint;
     private Rect rect;
