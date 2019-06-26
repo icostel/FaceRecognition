@@ -1,0 +1,77 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'
+
+android {
+    compileSdkVersion build_versions.target_sdk
+    buildToolsVersion build_versions.build_tools
+
+    defaultConfig {
+        applicationId "com.icostel.facerecognition"
+        minSdkVersion build_versions.min_sdk
+        targetSdkVersion build_versions.target_sdk
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            debuggable false
+            applicationIdSuffix ".stable"
+        }
+        debug {
+            minifyEnabled false
+            debuggable true
+            applicationIdSuffix ".develop"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    androidExtensions {
+        experimental = true
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output -> outputFileName = "FaceRecognition-${variant.name}_${variant.versionName}.apk" }
+    }
+}
+
+dependencies {
+
+    api deps.timber
+    api deps.support.app_compat
+    api deps.support.recyclerview
+    api deps.lifecycle.runtime
+    api deps.lifecycle.extensions
+    api deps.lifecycle.java8
+    api deps.dagger.runtime
+    api deps.dagger.android
+    api deps.dagger.android_support
+    api deps.constraint_layout
+    api deps.kotlin_stdlib
+    api deps.kotlin_coroutines
+    api deps.rx.android
+    api deps.rx.kotlin
+    api deps.rx.java
+    api deps.rx.adapter
+    api deps.moshi
+    api deps.mltoolkit
+    api deps.camerakit
+    api deps.jpegkit
+
+    kapt deps.dagger.android_support_compiler
+    kapt deps.dagger.compiler
+    kapt deps.lifecycle.compiler
+
+    androidTestImplementation deps.support.app_compat
+    androidTestImplementation deps.support.recyclerview
+    androidTestImplementation deps.dexmaker
+}

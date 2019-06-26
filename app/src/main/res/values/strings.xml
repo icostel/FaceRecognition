@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">FaceRecognition</string>
+    <string name="face">Face</string>
+    <string name="detect">Detect</string>
+    <string name="please_wait">Please wait…</string>
+</resources>
