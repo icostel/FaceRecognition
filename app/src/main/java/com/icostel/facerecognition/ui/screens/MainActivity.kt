@@ -5,11 +5,11 @@ import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProviders
 import com.google.firebase.ml.vision.face.FirebaseVisionFace
 import com.icostel.facerecognition.R
 import com.icostel.facerecognition.ui.utils.bind
 import com.icostel.facerecognition.ui.utils.observe
+import com.icostel.facerecognition.ui.utils.provideViewModel
 import com.icostel.facerecognition.ui.viewmodels.MainViewModel
 import com.icostel.facerecognition.ui.views.GraphicOverlay
 import com.icostel.facerecognition.ui.views.FaceOverlay
@@ -36,7 +36,7 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         Timber.d("$TAG onCreate()")
 
-        mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
+        mainViewModel = provideViewModel(MainViewModel::class.java)
         setContentView(R.layout.activity_main)
         bindUi()
     }
@@ -67,7 +67,7 @@ class MainActivity : BaseActivity() {
             }
         }
 
-        mainViewModel.detectLiveData.observe(this) { faces ->
+        mainViewModel.registerFacesEvent().observe(this) { faces ->
             Timber.d("$TAG found faces: ${faces != null && faces.size != 0}")
             onDetectionEnd()
             val res = if (faces != null && faces.size != 0) {
@@ -89,13 +89,13 @@ class MainActivity : BaseActivity() {
 
     private fun onDetectionEnd() {
         progressBar.visibility = View.GONE
-        detectBtn.isEnabled = true
         detectBtn.text = getString(R.string.detect)
         dimView.visibility = View.GONE
         // resume camera preview after processing
         AndroidSchedulers.mainThread().scheduleDirect({
             cameraView.start()
             graphicOverlay.clear()
+            detectBtn.isEnabled = true
         }, RESUME_CAMERA_DELAY, TimeUnit.MILLISECONDS)
     }
 

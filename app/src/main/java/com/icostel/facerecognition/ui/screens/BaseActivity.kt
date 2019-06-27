@@ -3,7 +3,7 @@ package com.icostel.facerecognition.ui.screens
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
-import com.icostel.facerecognition.ui.utils.setImmersive
+import com.icostel.facerecognition.ui.utils.enableImmersive
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
 
@@ -15,11 +15,11 @@ open class BaseActivity: DaggerAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setImmersive()
+        enableImmersive()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        setImmersive()
+        enableImmersive()
     }
 }

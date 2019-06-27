@@ -1,4 +1,4 @@
-package com.icostel.facerecognition.di.modules
+package com.icostel.facerecognition.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

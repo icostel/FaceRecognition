@@ -1,10 +1,9 @@
 package com.icostel.facerecognition.ui.viewmodels
 
 import android.graphics.Bitmap
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.LiveData
 import com.google.firebase.ml.vision.face.FirebaseVisionFace
 import com.icostel.facerecognition.domain.FaceDetectionUseCase
-import com.icostel.facerecognition.ui.utils.SingleLiveEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -15,12 +14,11 @@ class MainViewModel
     private val faceDetectionUseCase: FaceDetectionUseCase
 ) : BaseViewModel() {
 
-    internal var detectLiveData = SingleLiveEvent<MutableList<FirebaseVisionFace>?>()
+    internal fun registerFacesEvent(): LiveData<MutableList<FirebaseVisionFace>?> {
+        return faceDetectionUseCase.facesResultEvent
+    }
 
     internal fun detect(sourceBitmap: Bitmap, width: Int, height: Int) {
-        Transformations.map(faceDetectionUseCase.facesResultEvent) { faces ->
-            detectLiveData.postValue(faces)
-        }
         disposable.add(faceDetectionUseCase.detect(sourceBitmap, width, height)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

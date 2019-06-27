@@ -10,7 +10,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class FaceDetectionUseCase
-@Inject constructor(private val faceDetector: FirebaseVisionFaceDetector) {
+@Inject constructor(private val faceDetector: FirebaseVisionFaceDetector): BaseUseCase() {
 
     val facesResultEvent = SingleLiveEvent<MutableList<FirebaseVisionFace>?>()
 

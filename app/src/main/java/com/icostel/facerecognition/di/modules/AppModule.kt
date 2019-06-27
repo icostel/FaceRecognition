@@ -2,6 +2,7 @@ package com.icostel.facerecognition.di.modules
 
 import android.content.Context
 import com.icostel.facerecognition.di.FaceRecognitionApp
+import com.icostel.facerecognition.di.ViewModelFactory
 import dagger.Binds
 import dagger.Module
 import dagger.android.support.AndroidSupportInjectionModule
@@ -12,7 +13,7 @@ import dagger.android.support.AndroidSupportInjectionModule
         ActivityModule::class,
         ViewModelFactory::class,
         ViewModelModule::class,
-        FaceDetector::class
+        FaceDetectorModule::class
     ]
 )
 abstract class AppModule {
