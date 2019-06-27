@@ -3,5 +3,6 @@
     <string name="face">Face</string>
     <string name="detect">Detect faces</string>
     <string name="no_faces_found">No faces were found</string>
+    <string name="faces_found">Faces were found</string>
     <string name="detecting">Detecting…</string>
 </resources>

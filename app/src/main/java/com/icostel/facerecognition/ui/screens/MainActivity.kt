@@ -12,7 +12,7 @@ import com.icostel.facerecognition.ui.utils.bind
 import com.icostel.facerecognition.ui.utils.observe
 import com.icostel.facerecognition.ui.viewmodels.MainViewModel
 import com.icostel.facerecognition.ui.views.GraphicOverlay
-import com.icostel.facerecognition.ui.views.RectOverlay
+import com.icostel.facerecognition.ui.views.FaceOverlay
 import com.wonderkiln.camerakit.CameraView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
@@ -59,10 +59,7 @@ class MainActivity : BaseActivity() {
         dimView = bind(R.id.dim_view)
 
         detectBtn.setOnClickListener {
-            progressBar.visibility = View.VISIBLE
-            detectBtn.isEnabled = false
-            detectBtn.text = getString(R.string.detecting)
-            dimView.visibility = View.VISIBLE
+            onDetectionStart()
             cameraView.captureImage { cameraImage ->
                 mainViewModel.detect(cameraImage.bitmap, cameraView.width, cameraView.height)
                 cameraView.stop()
@@ -71,28 +68,41 @@ class MainActivity : BaseActivity() {
         }
 
         mainViewModel.detectLiveData.observe(this) { faces ->
-            Timber.d("found faces: ${faces != null && faces.size != 0}")
-            progressBar.visibility = View.GONE
-            detectBtn.isEnabled = true
-            detectBtn.text = getString(R.string.detect)
-            dimView.visibility = View.GONE
-            // resume camera preview after processing
-            AndroidSchedulers.mainThread().scheduleDirect({
-                cameraView.start()
-                graphicOverlay.clear()
-            }, RESUME_CAMERA_DELAY, TimeUnit.MILLISECONDS)
-            if (faces != null && faces.size != 0) {
+            Timber.d("$TAG found faces: ${faces != null && faces.size != 0}")
+            onDetectionEnd()
+            val res = if (faces != null && faces.size != 0) {
                 processFaceResult(faces)
+                getString(R.string.faces_found)
             } else {
-                Toast.makeText(this@MainActivity, getString(R.string.no_faces_found), Toast.LENGTH_LONG).show()
+                getString(R.string.no_faces_found)
             }
+            Toast.makeText(this@MainActivity, res, Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun onDetectionStart() {
+        progressBar.visibility = View.VISIBLE
+        detectBtn.isEnabled = false
+        detectBtn.text = getString(R.string.detecting)
+        dimView.visibility = View.VISIBLE
+    }
+
+    private fun onDetectionEnd() {
+        progressBar.visibility = View.GONE
+        detectBtn.isEnabled = true
+        detectBtn.text = getString(R.string.detect)
+        dimView.visibility = View.GONE
+        // resume camera preview after processing
+        AndroidSchedulers.mainThread().scheduleDirect({
+            cameraView.start()
+            graphicOverlay.clear()
+        }, RESUME_CAMERA_DELAY, TimeUnit.MILLISECONDS)
     }
 
     private fun processFaceResult(faces: MutableList<FirebaseVisionFace>) {
         faces.forEach { face ->
             val bounds = face.boundingBox
-            val rectOverLay = RectOverlay(graphicOverlay, bounds)
+            val rectOverLay = FaceOverlay(this@MainActivity, graphicOverlay, bounds)
             graphicOverlay.add(rectOverLay)
         }
     }
