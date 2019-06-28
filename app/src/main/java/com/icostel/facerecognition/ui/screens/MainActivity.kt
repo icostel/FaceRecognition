@@ -9,7 +9,7 @@ import com.google.firebase.ml.vision.face.FirebaseVisionFace
 import com.icostel.facerecognition.R
 import com.icostel.facerecognition.ui.utils.bind
 import com.icostel.facerecognition.ui.utils.observe
-import com.icostel.facerecognition.ui.utils.provideViewModel
+import com.icostel.facerecognition.ui.utils.getViewModel
 import com.icostel.facerecognition.ui.viewmodels.MainViewModel
 import com.icostel.facerecognition.ui.views.GraphicOverlay
 import com.icostel.facerecognition.ui.views.FaceOverlay
@@ -36,7 +36,7 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         Timber.d("$TAG onCreate()")
 
-        mainViewModel = provideViewModel(MainViewModel::class.java)
+        mainViewModel = getViewModel(viewModelFactory, MainViewModel::class.java)
         setContentView(R.layout.activity_main)
         bindUi()
     }
@@ -67,7 +67,7 @@ class MainActivity : BaseActivity() {
             }
         }
 
-        mainViewModel.registerFacesEvent().observe(this) { faces ->
+        mainViewModel.faceEvent.observe(this) { faces ->
             Timber.d("$TAG found faces: ${faces != null && faces.size != 0}")
             onDetectionEnd()
             val res = if (faces != null && faces.size != 0) {
