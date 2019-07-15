@@ -1,4 +1,4 @@
-package com.icostel.facerecognition.ui.screens
+package com.icostel.facerecognition.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle

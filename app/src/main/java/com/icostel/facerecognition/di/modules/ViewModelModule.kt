@@ -2,7 +2,7 @@ package com.icostel.facerecognition.di.modules
 
 import androidx.lifecycle.ViewModel
 import com.icostel.facerecognition.di.ViewModelKey
-import com.icostel.facerecognition.ui.viewmodels.MainViewModel
+import com.icostel.facerecognition.ui.screens.main.MainViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

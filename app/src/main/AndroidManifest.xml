@@ -15,7 +15,7 @@
             android:name=".di.FaceRecognitionApp"
             tools:ignore="GoogleAppIndexingWarning">
         <activity
-                android:name="com.icostel.facerecognition.ui.screens.MainActivity"
+                android:name="com.icostel.facerecognition.ui.screens.main.MainActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

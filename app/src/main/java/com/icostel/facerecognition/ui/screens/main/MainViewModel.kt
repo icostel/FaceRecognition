@@ -1,10 +1,11 @@
-package com.icostel.facerecognition.ui.viewmodels
+package com.icostel.facerecognition.ui.screens.main
 
 
 import android.graphics.Bitmap
 import androidx.lifecycle.MediatorLiveData
 import com.google.firebase.ml.vision.face.FirebaseVisionFace
 import com.icostel.facerecognition.domain.FaceDetectionUseCase
+import com.icostel.facerecognition.ui.BaseViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber

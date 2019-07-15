@@ -1,6 +1,6 @@
 package com.icostel.facerecognition.di.modules
 
-import com.icostel.facerecognition.ui.screens.MainActivity
+import com.icostel.facerecognition.ui.screens.main.MainActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

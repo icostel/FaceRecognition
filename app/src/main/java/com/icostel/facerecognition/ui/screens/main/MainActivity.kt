@@ -1,4 +1,4 @@
-package com.icostel.facerecognition.ui.screens
+package com.icostel.facerecognition.ui.screens.main
 
 import android.os.Bundle
 import android.view.View
@@ -7,10 +7,10 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import com.google.firebase.ml.vision.face.FirebaseVisionFace
 import com.icostel.facerecognition.R
+import com.icostel.facerecognition.ui.BaseActivity
 import com.icostel.facerecognition.ui.utils.bind
 import com.icostel.facerecognition.ui.utils.observe
 import com.icostel.facerecognition.ui.utils.getViewModel
-import com.icostel.facerecognition.ui.viewmodels.MainViewModel
 import com.icostel.facerecognition.ui.views.GraphicOverlay
 import com.icostel.facerecognition.ui.views.FaceOverlay
 import com.wonderkiln.camerakit.CameraView
