@@ -14,8 +14,10 @@ import dagger.android.support.HasSupportFragmentInjector
 
 object AppInjector {
     fun init(app: FaceRecognitionApp) {
-        app.registerActivityLifecycleCallbacks(OnActivityCreateLifecycleCallback { activity, _ ->
-            handleActivity(activity)
+        app.registerActivityLifecycleCallbacks(object : OnActivityCreateLifecycleCallback {
+            override fun handleOnCreate(activity: Activity, savedInstanceState: Bundle) {
+                handleActivity(activity)
+            }
         })
     }
 
@@ -25,13 +27,13 @@ object AppInjector {
         }
         if (activity is FragmentActivity) {
             activity.supportFragmentManager
-                    .registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
-                        override fun onFragmentCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
-                            if (f is Injectable) {
-                                AndroidSupportInjection.inject(f)
-                            }
+                .registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
+                    override fun onFragmentCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
+                        if (f is Injectable) {
+                            AndroidSupportInjection.inject(f)
                         }
-                    }, true)
+                    }
+                }, true)
         }
     }
 }
